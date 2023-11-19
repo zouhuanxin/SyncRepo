@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="7658a416-9b99-4971-abd5-ac08ae57178e" name="算力平台">
+        <fileTransfer rootFolder="/23085412007/zhx/PycharmProjects" accessType="SFTP" host="172.17.120.160" port="30468" sshConfigId="87b44623-bf33-4fdd-abf1-7ea1a419070f" sshConfig="root@172.17.120.160:30468 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
