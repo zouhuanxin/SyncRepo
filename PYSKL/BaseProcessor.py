@@ -10,12 +10,8 @@ class BaseProcessor():
     所有模型继承此处理器进行计算
     1.加载环境变量
     2.加载模型
-    3.加载权重
-    4.加载数据
-    5.加载优化器
-    6.训练
-    7.测试
-    8.启动
+    3.加载数据
+    4.启动
     """
 
     def __init__(self, start_epoch=0, end_epoch=int, save_model_epoch=1, evaluation_epoch=1):
@@ -31,23 +27,34 @@ class BaseProcessor():
         else:
             self.dev = "cpu"
 
-        self.current_epoch = dict()
+        self.current_associated_data = dict()
         self.data_loader = dict()
 
+
+    # 加载模型的时候会先加载优化器，不需要额外调用加载优化器
     def load_model(self, model, path=None):
         if model is None:
-            print('model不能为空')
+            print('model not null')
         self.model = model
+        # 加载优化器
+        self.load_optimizer()
+        # 如果有给定路径则加载模型
         if path is not None:
-            self.model.load_state_dict(torch.load(path).state_dict())
+            print('load model')
+            checkpoint = torch.load(path)
+            model.load_state_dict(checkpoint['model_state_dict'])
+            self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            self.current_associated_data['epoch'] = checkpoint['epoch']
+            self.current_associated_data['loss'] = checkpoint['loss']
+
         self.model.to(self.dev)
 
     # weights权重文件
     def load_weighs(self, weights):
         if self.model is None:
-            print('model不能为空')
+            print('model not null')
         if weights is None:
-            print('weights文件不能为空')
+            print('weights not null')
         pretrained_weights = torch.load(weights)
         self.model.load_state_dict(pretrained_weights)
 
@@ -97,7 +104,8 @@ class BaseProcessor():
         if phase == 'train':
             # training phase
             for epoch in range(self.start_epoch, self.end_epoch):
-                self.current_epoch['epoch'] = epoch
+                self.current_associated_data['loss'] = 0 #每次epoch开始则清空下损失
+                self.current_associated_data['epoch'] = epoch
                 print('Training epoch: {}'.format(epoch))
                 self.train()
                 print('Done.')
@@ -105,7 +113,13 @@ class BaseProcessor():
                 # save model
                 if ((epoch + 1) % self.save_model_epoch == 0) or (epoch + 1 == self.end_epoch):
                     filename = 'epoch{}_model.pt'.format(epoch + 1)
-                    torch.save(self.model, filename)
+                    torch.save({
+                        'epoch': epoch,
+                        'model_state_dict': self.model.state_dict(),
+                        'optimizer_state_dict': self.optimizer.state_dict(),
+                        'loss': self.current_associated_data['loss']
+                    }, filename)
+
 
                 # evaluation
                 if ((epoch + 1) % self.evaluation_epoch == 0) or (epoch + 1 == self.end_epoch):

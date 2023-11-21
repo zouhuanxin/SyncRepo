@@ -14,16 +14,14 @@ import sys
 def progress_bar(epoch, loss, finish_tasks_number, tasks_number):
     percentage = round(finish_tasks_number / tasks_number * 100)
     print(
-        "\repoch:{} loss:{:.3f} {}/{} 进度:{}%:".format(epoch, loss, finish_tasks_number, tasks_number, percentage),
-        "#" * (percentage // 2), end="")
+        "\repoch:{} loss:{:.3f} {}/{} {}%:".format(epoch, loss, finish_tasks_number, tasks_number, percentage), end="")
     sys.stdout.flush()
 
 
 def progress_bar2(finish_tasks_number, tasks_number):
     percentage = round(finish_tasks_number / tasks_number * 100)
     print(
-        "\r{}/{} 进度:{}%:".format(finish_tasks_number, tasks_number, percentage),
-        "#" * (percentage // 2), end="")
+        "\r{}/{} {}%:".format(finish_tasks_number, tasks_number, percentage), end="")
     sys.stdout.flush()
 
 

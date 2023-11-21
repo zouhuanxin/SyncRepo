@@ -15,22 +15,24 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 batch_size = 16
 
+test_path_after = 'D:/数据集/'
+test_path2_after = '/23085412008/PYSKL/PYSKL/'
+
+test_path = test_path2_after
 
 class Processor(BaseProcessor):
     def __init__(self):
         super().__init__(end_epoch=100)
         self.init_environment()
         self.load_model(Model(batch_size=batch_size))
-        train_feeder = Feeder('./train_data', skeleton_path='/Users/zouhuanxin/Downloads/数据集/nturgb+d_skeletons')
-        test_feeder = Feeder('./test_data', skeleton_path='/Users/zouhuanxin/Downloads/数据集/nturgb+d_skeletons')
+        train_feeder = Feeder(test_path+'/skeleton_img', skeleton_path=test_path+'/nturgb+d_skeletons', phase='train')
+        test_feeder = Feeder(test_path+'/skeleton_img', skeleton_path=test_path+'/nturgb+d_skeletons', phase='test')
         self.load_data(dataset=train_feeder, batch_size=batch_size, dataType='train')
         self.load_data(dataset=test_feeder, batch_size=batch_size, dataType='test')
-        self.load_optimizer()
         self.loss_func = nn.CrossEntropyLoss()
 
     def train(self):
         loader = self.data_loader['train']
-        loss_value = 0
         i = 0
 
         for data, label, skeleton_data in loader:
@@ -48,9 +50,9 @@ class Processor(BaseProcessor):
             loss.backward()
             self.optimizer.step()
 
-            loss_value = loss_value + loss
+            self.current_associated_data['loss'] = self.current_associated_data['loss'] + loss
 
-            progress_bar(self.current_epoch['epoch'], loss_value, i, len(loader))
+            progress_bar(self.current_associated_data['epoch'], self.current_associated_data['loss'], i, len(loader))
             i = i + 1
 
     def test(self):

@@ -16,11 +16,34 @@ transform = transforms.Compose([
 
 class Feeder(data.Dataset):
 
-    def __init__(self, data_path, skeleton_path=None):
+    def __init__(self, data_path, skeleton_path=None, phase='train'):
         self.data_path = data_path
         self.skeleton_path = skeleton_path
-        self.sample_names = os.listdir(data_path)
         self.skeleton_sample_names = os.listdir(skeleton_path)  # 骨架数据
+        self.phase = phase
+        if phase == 'train':
+            self.sample_names = self.readData()[0]
+        else:
+            self.sample_names = self.readData()[1]
+
+    # 根据phase阶段来读取一个文件夹中不同的数据
+    def readData(self):
+        train_names = []
+        test_names = []
+        data_paths = os.listdir(self.data_path)
+        for i,filename in enumerate(data_paths):
+            action_class = int(
+                filename[filename.find('A') + 1:filename.find('A') + 4])
+            subject_id = int(
+                filename[filename.find('P') + 1:filename.find('P') + 4]) #人物，总共40个人，35个人训练，5个人测试
+            camera_id = int(
+                filename[filename.find('C') + 1:filename.find('C') + 4])
+            if subject_id <= 35:
+                train_names.append(filename)
+            else:
+                test_names.append(filename)
+        return train_names, test_names
+
 
     def __len__(self):
         return len(self.sample_names)
