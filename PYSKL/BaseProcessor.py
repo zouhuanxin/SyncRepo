@@ -51,6 +51,7 @@ class BaseProcessor():
                             state[k] = v.cuda()
             self.current_associated_data['epoch'] = checkpoint['epoch']
             self.current_associated_data['loss'] = checkpoint['loss']
+            self.start_epoch = self.current_associated_data['epoch']
 
         self.model.to(self.dev)
 
@@ -100,7 +101,7 @@ class BaseProcessor():
         if phase == 'train':
             # training phase
             for epoch in range(self.start_epoch, self.end_epoch):
-                self.current_associated_data['loss'] = 0 #每次epoch开始则清空下损失
+                self.current_associated_data['loss'] = 0
                 self.current_associated_data['epoch'] = epoch
                 print('Training epoch: {}'.format(epoch))
                 self.train()

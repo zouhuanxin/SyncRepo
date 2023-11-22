@@ -9,7 +9,6 @@ import torchvision.transforms as transforms
 
 # 创建转换操作
 transform = transforms.Compose([
-    transforms.Resize((100, 100)),  # 调整图片大小
     transforms.ToTensor()  # 归一化到0-1
 ])
 
@@ -155,12 +154,12 @@ class Feeder(data.Dataset):
             image_tensor = transform(image)
             data[i] = image_tensor
         label = video_file_name[video_file_name.find('A') + 1:video_file_name.find('A') + 4]
-        data = torch.Tensor(data).requires_grad_(True)
+        data = torch.Tensor(data)
 
         skeleton_data = []
         if self.skeleton_path is not None:
             skeleton_file_name = self.skeleton_sample_names[self.searchSkeletonByFilename(video_file_name)]
             skeleton_file_path = os.path.join(self.skeleton_path, skeleton_file_name)
             skeleton_data = self.read_xyz(skeleton_file_path)
-        skeleton_data = torch.Tensor(skeleton_data).requires_grad_(True)
+        skeleton_data = torch.Tensor(skeleton_data)
         return data, int(label) - 1, skeleton_data
