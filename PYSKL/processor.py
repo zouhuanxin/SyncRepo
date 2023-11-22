@@ -24,7 +24,7 @@ class Processor(BaseProcessor):
     def __init__(self):
         super().__init__(end_epoch=100)
         self.init_environment()
-        self.load_model(Model(batch_size=batch_size))
+        self.load_model(Model(batch_size=batch_size),'epoch1_model.pt')
         train_feeder = Feeder(test_path+'/skeleton_img', skeleton_path=test_path+'/nturgb+d_skeletons', phase='train')
         test_feeder = Feeder(test_path+'/skeleton_img', skeleton_path=test_path+'/nturgb+d_skeletons', phase='test')
         self.load_data(dataset=train_feeder, batch_size=batch_size, dataType='train')
@@ -47,7 +47,6 @@ class Processor(BaseProcessor):
 
             output = self.model(data, skeleton_data)
             loss = self.loss_func(output, label)
-            loss.backward()
             self.optimizer.step()
 
             self.current_associated_data['loss'] = self.current_associated_data['loss'] + loss
@@ -85,7 +84,7 @@ class Processor(BaseProcessor):
         for i in range(len(outputs)):
             if outputs[i] == labels[i]:
                 T = T + 1
-        print('正确个数:{},失败个数:{},正确率:{}'.format(T, len(outputs) - T, T / len(outputs)))
+        print('True Number:{},False Number:{},Correctness:{}'.format(T, len(outputs) - T, T / len(outputs)))
 
 
 # 4145

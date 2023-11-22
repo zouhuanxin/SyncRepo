@@ -23,7 +23,7 @@ class BaseProcessor():
     def init_environment(self):
         # gpu
         if torch.cuda.is_available():
-            self.dev = "cuda:0"
+            self.dev = "cuda"
         else:
             self.dev = "cpu"
 
@@ -44,19 +44,15 @@ class BaseProcessor():
             checkpoint = torch.load(path)
             model.load_state_dict(checkpoint['model_state_dict'])
             self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            if self.dev != 'cpu':
+                for state in self.optimizer.state.values():  # 将优化器所有参数放到gpu
+                    for k, v in state.items():
+                        if isinstance(v, torch.Tensor):
+                            state[k] = v.cuda()
             self.current_associated_data['epoch'] = checkpoint['epoch']
             self.current_associated_data['loss'] = checkpoint['loss']
 
         self.model.to(self.dev)
-
-    # weights权重文件
-    def load_weighs(self, weights):
-        if self.model is None:
-            print('model not null')
-        if weights is None:
-            print('weights not null')
-        pretrained_weights = torch.load(weights)
-        self.model.load_state_dict(pretrained_weights)
 
     def load_data(self, dataset=None, batch_size=64, dataloader=None, dataType='train'):
         if dataloader is not None:
