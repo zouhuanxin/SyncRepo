@@ -1,7 +1,5 @@
-import numpy as np
-import os
 from utils_zhx import *
-from BeanData import *
+from PYSKL.feeder.BeanData import *
 from PreprocessPoseData import *
 
 

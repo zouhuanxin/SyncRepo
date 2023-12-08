@@ -6,6 +6,9 @@ from functools import partial
 import torch.nn.functional as F
 
 
+"""
+比较与MoCoV2来说这里的致命问题就是依赖于批次大小提供足够多的负样本集合
+"""
 class RenovateNet(nn.Module):
     def __init__(self, n_channel, n_class, alp=0.125, tmp=0.125, mom=0.9, h_channel=None, version='V0',
                  pred_threshold=0.0, use_p_map=True):

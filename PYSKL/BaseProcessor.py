@@ -74,7 +74,7 @@ class BaseProcessor():
                     batch_size=batch_size,
                     shuffle=False)
 
-    def load_optimizer(self, optimizer='SGD', learn_rate=0.0001, momentum=0.9, weight_decay=0.0001):
+    def load_optimizer(self, optimizer='SGD', learn_rate=0.001, momentum=0.9, weight_decay=0.0001):
         if optimizer == 'SGD':
             self.optimizer = optim.SGD(
                 self.model.parameters(),

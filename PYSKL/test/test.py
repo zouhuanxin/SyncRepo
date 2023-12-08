@@ -1,6 +1,3 @@
-import os
-from PYSKL.utils_zhx import *
-
 # minFrame = 3000
 # index = 0
 # data_path = '/Users/zouhuanxin/Downloads/数据集/nturgb+d_skeletons'

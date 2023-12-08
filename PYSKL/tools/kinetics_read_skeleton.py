@@ -1,7 +1,7 @@
 from PreprocessPoseData import *
 import os
 from utils_zhx import *
-from BeanData import *
+from PYSKL.feeder.BeanData import *
 import json
 
 def read_skeleton(data_path, label_path='', dataset='kinetics'):
